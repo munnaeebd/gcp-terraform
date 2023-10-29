@@ -1,8 +1,8 @@
 locals {  
   env         = terraform.workspace
   owner       = "SAP"
-  cost-center = "internal"
-  project     = "rnd"
+  cost-center = "pgw"
+  project     = "mrportal"
   version     = "v0.0.1"
   project_id  = "munna-rnd"
   region      = "asia-southeast1"
