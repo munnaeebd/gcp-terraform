@@ -1,0 +1,10 @@
+{% for logpath in log_groups_path %}
+{{ logpath.logpath }} {
+    copytruncate
+    hourly
+    size 100M
+    rotate 5
+    create 640 tomcat tomcat
+}
+
+{% endfor %}

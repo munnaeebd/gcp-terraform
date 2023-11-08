@@ -55,6 +55,18 @@ locals {
     prod = "10.10.194.0/24"
   }
   subnet = local.tf_subnet[local.env]
+  tf_proxy_subnet = {
+    uat  = "10.10.182.0/24"
+    lt   = ""
+    prod = ""
+  }
+  proxy_subnet = local.tf_proxy_subnet[local.env]
+  tf_service_subnet = {
+    uat  = "172.16.0.0"
+    lt   = ""
+    prod = ""
+  }
+  service_subnet = local.tf_service_subnet[local.env]
  
   tf_network_mtu = {
     uat  = "1500"
@@ -112,5 +124,17 @@ locals {
     prod = ""
   }
   module_2_max_replicas = local.tf_module_2_max_replicas[local.env] 
+
+tf_redis_version = {
+    uat  = "REDIS_7_0"
+    prod = ""
+  }
+  redis_version = local.tf_redis_version[local.env] 
+
+tf_memory_size_gb = {
+    uat  = "5"
+    prod = ""
+  }
+  memory_size_gb = local.tf_memory_size_gb[local.env] 
 
 }  

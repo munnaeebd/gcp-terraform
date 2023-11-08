@@ -1,0 +1,18 @@
+---
+
+- name: Cloudwatch agent
+  yum:
+    name: awslogs
+    state: installed
+- name: Cloudwatch Agent Service enable
+  service:
+    name: awslogsd
+    enabled: yes
+- name: Cloudwatch Agent and cli Config Copy
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/awslogs/{{ item }}"
+  with_items:
+    - awslogs.conf
+    - awscli.conf
+  notify: Restart Cloudwatch

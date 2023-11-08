@@ -63,36 +63,48 @@ variable "network_firewall_policy_enforcement_order" {
   description = "Set the order that Firewall Rules and Firewall Policies are evaluated. Valid values are `BEFORE_CLASSIC_FIREWALL` and `AFTER_CLASSIC_FIREWALL`. (default null or equivalent to `AFTER_CLASSIC_FIREWALL`)"
 }
 
-variable "subnets" {
-  type        = string
-  default     = null
-  description = "mrportal private Subnet"
-}
-
 # variable "subnets" {
-#   type = list(object({
-#     subnet_name                      = string
-#     subnet_ip                        = string
-#     subnet_region                    = string
-#     subnet_private_access            = optional(string, "false")
-#     subnet_private_ipv6_access       = optional(string)
-#     subnet_flow_logs                 = optional(string, "false")
-#     subnet_flow_logs_interval        = optional(string, "INTERVAL_5_SEC")
-#     subnet_flow_logs_sampling        = optional(string, "0.5")
-#     subnet_flow_logs_metadata        = optional(string, "INCLUDE_ALL_METADATA")
-#     subnet_flow_logs_filter          = optional(string, "true")
-#     subnet_flow_logs_metadata_fields = optional(list(string), [])
-#     description                      = optional(string)
-#     purpose                          = optional(string)
-#     role                             = optional(string)
-#     stack_type                       = optional(string)
-#     ipv6_access_type                 = optional(string)
-#   }))
-#   description = "The list of subnets being created"
+#   type        = string
+#   default     = null
+#   description = "mrportal private Subnet"
 # }
+
+variable "subnets" {
+  type = list(object({
+    subnet_name                      = string
+    subnet_ip                        = string
+    subnet_region                    = string
+    subnet_private_access            = optional(string, "false")
+    subnet_private_ipv6_access       = optional(string)
+    subnet_flow_logs                 = optional(string, "false")
+    subnet_flow_logs_interval        = optional(string, "INTERVAL_5_SEC")
+    subnet_flow_logs_sampling        = optional(string, "0.5")
+    subnet_flow_logs_metadata        = optional(string, "INCLUDE_ALL_METADATA")
+    subnet_flow_logs_filter          = optional(string, "true")
+    subnet_flow_logs_metadata_fields = optional(list(string), [])
+    description                      = optional(string)
+    purpose                          = optional(string)
+    role                             = optional(string)
+    stack_type                       = optional(string)
+    ipv6_access_type                 = optional(string)
+  }))
+  description = "The list of subnets being created"
+}
 
 variable "secondary_ranges" {
   type        = map(list(object({ range_name = string, ip_cidr_range = string })))
   description = "Secondary ranges that will be used in some of the subnets"
   default     = {}
+}
+variable "service_subnet_name" {
+  type        = string
+  description = "mrportal service Subnet"
+}
+variable "service_subnet" {
+  type        = string
+  description = "mrportal service Subnet"
+}
+variable "iap_rule_target_tag" {
+  type        = list
+  description = "tag to use as a target_tag to assocoate instance IAP security rule "
 }

@@ -1,0 +1,16 @@
+[Unit]
+Description=Java11 Service
+After=multi-user.target network.target
+
+[Service]
+User={{ user }}
+Type=forking
+ExecStart=/opt/{{ user }}/bin/start.sh
+ExecStop=/opt/{{ user }}/bin/stop.sh
+Restart=on-failure
+LimitNOFILE=15000
+LimitNPROC=15000
+Nice=-5
+
+[Install]
+WantedBy=multi-user.target

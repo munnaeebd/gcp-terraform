@@ -1,0 +1,12 @@
+#!/bin/bash
+chown -R {{ user }}:{{ user }} /opt/{{ user }}/
+cd ~
+nohup java -jar {% if env != "uat" %}{{ tomcat.newrelic_parameter }}{% endif %} \
+  -Dspring.profiles.active={{ env }} -Dserver.port=8080 \
+  -Djava.awt.headless=true -server -XX:+UseG1GC -XX:+UseStringDeduplication \
+  -{{ Xms_value }} -{{ Xmx_value }} \
+  -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:MaxMetaspaceExpansion=128M \
+  -XX:+ExplicitGCInvokesConcurrent -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/opt/{{ user }}/logs/java_heapdump.hprof" \
+  -Djava.security.egd=file:/dev/./urandom \
+  ~/release/{{ module_name }}.jar >~/logs/stdout.log 2>~/logs/stderr.log &
+echo $! > ~/release/{{ module_name }}.pid

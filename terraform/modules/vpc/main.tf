@@ -21,3 +21,26 @@ resource "google_compute_shared_vpc_host_project" "shared_vpc_host" {
   project    = var.project_id
   depends_on = [google_compute_network.network]
 }
+resource "google_compute_firewall" "firewall_rules" {
+
+  # Get count for firewall rules to create
+  # count = length(var.firewall_rules)
+
+  # Firewall rule network - Single network for all firewall rules
+  network = google_compute_network.network.name
+
+  name = "${var.common_name}-rule-for-iap"
+  # Protocals & ports
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  # Source CIDR ranges
+  source_ranges = ["35.235.240.0/20"]
+  # Target tags
+  target_tags = var.iap_rule_target_tag
+
+  # Priority
+  # priority = var.priority
+
+}

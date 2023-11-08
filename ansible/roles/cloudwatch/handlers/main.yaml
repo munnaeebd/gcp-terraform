@@ -1,0 +1,6 @@
+---
+
+- name: Restart Cloudwatch
+  service:
+    name: awslogsd
+    state: restarted

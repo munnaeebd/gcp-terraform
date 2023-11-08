@@ -1,0 +1,21 @@
+---
+
+- name: Restart tomcat9
+  systemd:
+    name: tomcat9
+    state: restarted
+    daemon_reload: yes
+  when:
+    - module_name == "admin-dashboard"
+    - module_name == "authentication"
+    - module_name == "notification"
+    - module_name == "operations"
+    - module_name == "app-proxy"
+    - module_name == "transaction"
+- name: Restart Java11
+  systemd:
+    name: java11
+    state: restarted
+    daemon_reload: yes
+  when:
+    - module_name == "assisted-paybill"

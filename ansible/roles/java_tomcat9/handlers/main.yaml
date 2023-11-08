@@ -1,0 +1,13 @@
+---
+- name: Restart tomcat
+  systemd:
+    name: tomcat9
+    state: restarted
+    daemon_reload: yes
+  # ignore_errors: true
+
+- name: Graceful delay
+  # Add short delay for application to deploy
+  pause:
+    prompt: "Graceful delay for application to deploy"
+    seconds: 30

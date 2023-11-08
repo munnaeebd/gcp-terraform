@@ -1,0 +1,8 @@
+- hosts: uat-module-1
+  gather_facts: True
+  connection: ssh
+  remote_user: packer
+  become: yes
+  roles:
+    - system_prepare
+

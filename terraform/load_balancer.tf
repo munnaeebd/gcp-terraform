@@ -10,7 +10,7 @@ module "load_balancer" {
   load_balancing_scheme = "EXTERNAL_MANAGED", port_range = "80" }
   ]
   network              = module.vpc.network
-  subnetwork           = module.vpc.subnets
+  subnetwork           = lookup(module.vpc.subnets, "PRIVATE", "none")
 
   default_backend = module.module_1_backend_service.backend_id
   path_rule = [

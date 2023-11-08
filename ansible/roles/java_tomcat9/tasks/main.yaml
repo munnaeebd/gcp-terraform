@@ -1,0 +1,129 @@
+---
+
+- name: Create directory for jdk
+  file:
+    path: /opt/jdk
+    state: directory
+- name: Extract JDK11 to jdk directory
+  unarchive:
+    src: https://bkash-devops-tools.s3-ap-southeast-1.amazonaws.com/amazon-corretto-11.0.7.10.1-linux-x64.tar.gz
+    dest: /opt/jdk
+    extra_opts: [ --strip-components=1 ]
+    remote_src: yes
+- name: JDK profile
+  copy:
+    src: jdk11.sh
+    dest: /etc/profile.d/
+- name: Source JDK profile file
+  shell: source /etc/profile.d/jdk11.sh
+- name: java alternatives path installation
+  command: alternatives --install /usr/bin/java java /opt/jdk/bin/java 2
+- name: usercreate tomcat
+  user:
+    name: "{{ user }}"
+    shell: /bin/false
+    home: /opt/{{ user }}
+- name: tomcat folder create
+  file:
+    path: /opt/{{ user }}
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0700
+    recurse: yes
+- name: tomcat zip file unarchive
+  unarchive:
+    src: https://bkash-devops-tools.s3.ap-southeast-1.amazonaws.com/apache-tomcat-9.0.52.tar.gz
+    dest: /opt/{{ user }}
+    extra_opts: [ --strip-components=1 ]
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    remote_src: yes
+- name: Remove default files from apache tomcat before installing
+  file:
+    path: /opt/{{ user }}/webapps/{{ item }}
+    state: absent
+  with_items:
+    - docs
+    - examples
+    - host-manager
+    - manager
+    - ROOT
+- name: copy tomcat system service
+  template:
+    src: tomcat_service.j2
+    dest: /usr/lib/systemd/system/tomcat9.service
+- name: tomcat service enable
+  systemd:
+    name: tomcat9
+    enabled: yes
+    masked: no
+- name: copy tomcat9 server.xml
+  template:
+    src: server.xml.j2
+    dest: /opt/{{ user }}/conf/server.xml
+    backup: yes
+  when: module_name == "admin-dashboard"
+#  web.xml
+- name: ownership change for apache tomcat9
+  file:
+    dest: /opt/{{ user }}
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    recurse: yes
+- name: copy star bkash certificate to tomcat folder
+  copy:
+    src: star_bkash_com_renewed_concat.jks
+    dest: /opt/{{ user }}/star_bkash_com_renewed_concat.jks
+    owner: "{{ user }}"
+    group: "{{ user }}"
+  when: module_name == "admin-dashboard"
+- name: Remove tomcat file from /opt/tomcat
+  file:
+    path: /opt/{{ user }}/tomcat9
+    state: absent
+- name: permission of catelina
+  file:
+    path: /opt/{{ user }}/bin/{{item}}
+    mode: 0755
+  with_items:
+    - catalina.sh
+    - startup.sh
+    - shutdown.sh
+    - digest.sh
+- name: module war file deploy
+  copy:
+    src: "{{ artifacts_directory }}/{{ module_name }}.war"
+    dest: /opt/{{ user }}/webapps/
+    owner: "{{ user }}"
+    group: "{{ user }}"
+  when:
+    - module_name != "admin-dashboard"
+    - module_name != "notification"
+- name: admin-dashboard and notification war file deploy
+  copy:
+    src: "{{ artifacts_directory }}/{{ module_name }}.war"
+    dest: /opt/{{ user }}/webapps/ROOT.war
+    owner: "{{ user }}"
+    group: "{{ user }}"
+  when: module_name == "admin-dashboard" or module_name == "notification"
+  notify: Restart tomcat
+- name: sleep timeout
+  shell: sleep 10s
+- name: monitor folder create
+  file:
+    path: /opt/{{ user }}/webapps/monitor
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0755
+    recurse: yes
+- name: aws_monitor file deploy
+  copy:
+    src: aws_monitor.html
+    dest: /opt/{{ user }}/webapps/monitor/aws_monitor.html
+    owner: "{{ user }}"
+    group: "{{ user }}"
+  notify:
+    - Restart tomcat
+    - Graceful delay

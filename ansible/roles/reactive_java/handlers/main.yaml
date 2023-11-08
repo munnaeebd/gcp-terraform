@@ -1,0 +1,7 @@
+---
+- name: Restart Java11
+  systemd:
+    name: java11
+    state: restarted
+    daemon_reload: yes
+  # ignore_errors: true

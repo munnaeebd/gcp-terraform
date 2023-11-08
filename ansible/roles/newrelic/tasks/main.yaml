@@ -1,0 +1,33 @@
+---
+
+- name: newrelic license keyfile
+  template:
+    src: newrelic-infra.yml.j2
+    dest: /etc/newrelic-infra.yml
+- name: newrelic repo Copy
+  copy:
+    src: newrelic-infra.repo
+    dest: /etc/yum.repos.d/newrelic-infra.repo
+- name: newrelic install
+  yum:
+    name: newrelic-infra
+    enablerepo: newrelic-infra
+    state: latest
+  notify: 
+    - Restart tomcat9
+    - Restart Java11
+- name: newrelic java agent Copy and unarchive
+  unarchive:
+    src: https://bkash-devops-tools.s3.ap-southeast-1.amazonaws.com/newrelic-java-7.5.0.zip
+    dest: /opt/
+    remote_src: yes
+- name: ownership change for newrelic
+  file:
+    dest: /opt/newrelic
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    recurse: yes
+- name: copy newrelic agent configure
+  template:
+    src: newrelic.yml.j2
+    dest: /opt/newrelic/newrelic.yml

@@ -1,0 +1,15 @@
+---
+# Notes:
+# - Set variables as key-value pairs applicable for 'all' hosts;
+# - Host-level, in-line variable declaration have higher precedence that overwrites entries set here.
+
+user: tomcat
+artifacts_directory: ../agent-app-war-build
+region: ap-southeast-1 # Asia Pacific (Singapore)
+buffer_duration: 5000
+project_name: agentapp
+
+## New Relic Configs
+license_key: 16a903275104eb81fa9c34a27368ade7efd00e94
+tomcat:
+  newrelic_parameter: -javaagent:/opt/newrelic/newrelic.jar

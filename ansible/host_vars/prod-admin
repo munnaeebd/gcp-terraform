@@ -1,0 +1,15 @@
+module_name: admin-dashboard
+user: tomcat
+artifacts_directory: ../agent-app-war-build
+env: prod
+region: ap-southeast-1
+Xms_value: Xms4096m
+Xmx_value: Xmx6144m
+license_key: 16a903275104eb81fa9c34a27368ade7efd00e94
+buffer_duration: 5000
+
+tomcat:
+  newrelic_parameter: -javaagent:/opt/newrelic/newrelic.jar
+
+log_groups_path:
+  - logpath: /opt/tomcat/logs/agentapp-admin.log

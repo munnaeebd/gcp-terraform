@@ -3,9 +3,9 @@ module "module_1_manage_instance_groups" {
   region              = local.region
   project_id          = local.project_id
   instance_name       = "${local.env}-${local.project}-module-1"
-  min_replicas        = local.module_2_min_replicas
-  max_replicas        = local.module_2_max_replicas
-  instance_template   = module.module_2_instance_template.self_link
+  min_replicas        = local.module_1_min_replicas
+  max_replicas        = local.module_1_max_replicas
+  instance_template   = module.module_1_instance_template.self_link
   autoscaling_enabled = true
   common_name         = "${local.env}-${local.project}"
   scaling_schedules = [{

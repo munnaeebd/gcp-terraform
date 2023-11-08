@@ -1,0 +1,10 @@
+- hosts: prod-admin
+  gather_facts: True
+  connection: ssh
+  remote_user: ec2-user
+  become: yes
+  roles:
+    - system_prepare
+    - java_tomcat9
+    - newrelic
+    - cloudwatch
